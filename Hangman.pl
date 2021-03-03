@@ -12,48 +12,175 @@ sub magical_word(){
 	@magical_words = split(", ",$magical_sentence); 
 }
 
-$arrsize= @magical_words;
-$trials_left=6;	
+$trials_left=6;
 
 &main();
 sub main{
 	magical_word();
-	$word=@magical_words[int(rand($arrsize-1)) - 1];
-	print "$word\n";
+	$word=@magical_words[int(rand(100))];
 	$size = length($word);
-	print "$size\n";
 	use Data::Dumper qw(Dumper);
 	@LettersArray = split //, $word;
+	print "$word\n";
+	@answer=();
+	for ($i=0; $i < $size; $i++) {
+         $answer [$i] = '-';
+    }
 	while(1)
 	{
-		last if($trials_left eq 0);
-		print "Here is Your Word\n";
-		print "Guesses So Far: ";
-		for ($i=0; $i < $size; $i++) {
-                @guesses [$i] = '_';
+		print "Here is Your Word ";
+        foreach $i(@answer)
+        {
+            print $i;
         }
-		print "Make A Guess: ";	
+		print "\n";
+		print "Make A Guess: ";
 		$guessed_letter=<STDIN>;
-		#condition lagana hai agar same cheez type kiya toh
+        chomp($guessed_letter);
 		$counter=0;
-		for ($i=0; $i < $size; $i++) {
-			if($guessed_letter eq @LettersArray[$i])
-			{
-				@guesses[$i] = $guessed_letter;
-				$counter=1;
-			}
-		}	
-		if($counter eq 1)
+		$counter1=0;
+		for($i=0; $i< $size;$i++)
 		{
+		    if($guessed_letter eq $answer[$i])
+		    {
+		        print "You Guessed $guessed_letter!\n";
+		        print "Please Guess Different Letter\n";
+				$counter1=1;
+				last;
+		    }
+		}
+		for ($i=0; $i < $size; $i++) {
+		    if($guessed_letter eq $LettersArray[$i])
+		    {
+		        $answer[$i] = $guessed_letter;
+				$counter=1;
+		    }
+		}
+		
+		if($counter==1)
+		{
+		    if(check_win())
+	        {
+	            print "Word:-$word";
+                print "\nYou Won!";
+                exit 0;
+	        }
+		    Display();
 			print "Good Guess! you have ";
 			print $trials_left;
-			print " body parts left"	
+			print " body parts left\n"
 		}
 		else
 		{
-			print "Bad Guess - you have ";
-			print $trials_left - 1;
-			print " body parts left"
+			if($counter1==0)
+			{
+			    if($trials_left!=1)
+			    {
+			        Display();
+			        print "Bad Guess - you have ";
+			    	print $trials_left = $trials_left - 1;
+			    	print " body parts left\n"
+			    }
+			    else
+			    {
+			        $trials_left = $trials_left - 1;
+			        Display();
+			    }
+				
+			}
 		}
 	}
+}
+
+sub Display() {
+    if($trials_left==6)
+    {
+        print "  -------\n";
+        print "  |     |\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "--|----\n";
+    }
+    elsif($trials_left==5)
+    {
+        print "  -------\n";
+        print "  |     |\n";
+        print "  |     o\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "--|----\n";
+    }
+    elsif($trials_left==4)
+    {
+        print "  -------\n";
+        print "  |     |\n";
+        print "  |     o\n";
+        print "  |     |\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "--|----\n";
+    }
+    elsif($trials_left==3)
+    {
+        print "  -------\n";
+        print "  |     |\n";
+        print "  |     o\n";
+        print "  |    \\|\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "--|----\n";
+    }
+    elsif($trials_left==2)
+    {
+        print "  -------\n";
+        print "  |     |\n";
+        print "  |     o\n";
+        print "  |    \\|/\n";
+        print "  |\n";
+        print "  |\n";
+        print "  |\n";
+        print "--|----\n";
+    }
+    elsif($trials_left==1)
+    {
+        print "  -------\n";
+        print "  |     |\n";
+        print "  |     o\n";
+        print "  |    \\|/\n";
+        print "  |     /\n";
+        print "  |\n";
+        print "  |\n";
+        print "--|----\n";
+    }
+    else
+    {
+        print "  -------\n";
+        print "  |     |\n";
+        print "  |     x\n";
+        print "  |    \\|/\n";
+        print "  |     /\\\n";
+        print "  |\n";
+        print "  |\n";
+        print "--|----\n";
+        print "You lost!\n";
+        exit 0;
+    }
+}
+
+sub check_win() {
+	$alpha_numeric;
+	for($i=0; $i<$size;$i++)
+	{
+        if ($LettersArray[$i] ne $answer [$i]) {
+            return 0;
+        }
+	}
+	return 1;
 }
